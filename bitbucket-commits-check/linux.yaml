@@ -1,0 +1,26 @@
+- name: Transfer and execute a script.
+  hosts: all
+  remote_user: root
+  become: yes
+  tasks:
+     - name: Transfer the script
+       copy: src=tarscript.sh dest=/home/workspace/ mode=777
+
+     #- name: Transfer the ssh config
+      # copy: src=config dest=/root/.ssh/ mode=644
+
+     - name:  Execute the script 
+       script: tarscript.sh >>taroutput.txt
+       args:
+        chdir: /home/workspace
+      #Storing in a path relative to the playbook
+     - name: Fetching for branch status 
+       fetch:
+        src: /var/tmp/stash_logs/1.tar
+        dest: /Users/user/git-codebases/stash_commits/output/tar-{{ inventory_hostname }}.tar
+        flat: yes
+    # - name: Fetching for repofailure
+    #   fetch:
+     #   src: /var/tmp/stash_logs/repo_failure201803270745
+      #  dest: /Users/user/git-codebases/stash_commits/reposfailed-{{ inventory_hostname }}
+       # flat: yes
